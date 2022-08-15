@@ -22,11 +22,38 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        startAnim = false;
 
+        canvas.classList.add("game-field");
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    const mainDiv = doc.createElement("div"),
+        divContainer = doc.createElement("div");
+
+    mainDiv.classList.add("main");
+    divContainer.classList.add("container");
+    divContainer.setAttribute("id", "game-container");
+
+    const restartButton = doc.createElement("button");
+    restartButton.classList.add("restart-btn");
+    restartButton.innerText = "Start Game";
+
+    divContainer.appendChild(canvas);
+    divContainer.appendChild(restartButton);
+    mainDiv.appendChild(divContainer);
+    
+
+    doc.body.appendChild(mainDiv);
+
+    restartButton.addEventListener('click', (e) => {
+        if (e.target.innerText == "Start Game") {
+            e.target.innerText = "Restart Game";
+        }
+        startAnim = true;
+        player.unfreezing();
+        init();         
+    });
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -55,7 +82,9 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if (startAnim) {
+        requestID = win.requestAnimationFrame(main);
+        }
     }
 
     /* This function does some initial setup that should only occur once,
@@ -93,7 +122,7 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        player.update(dt);
     }
 
     /* This function initially draws the "game level", it will then call
@@ -168,6 +197,7 @@ var Engine = (function(global) {
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
      */
+    
     Resources.load([
         'images/stone-block.png',
         'images/water-block.png',
