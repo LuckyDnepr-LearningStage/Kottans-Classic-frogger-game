@@ -1,10 +1,10 @@
 "use strict";
 
-const winImage = new Image();
-winImage.src = "/images/win-banner.png";
-
 class Enemy {
     constructor(coordX, coordY, startSpeed) {
+        const cellX = 101,
+        cellY = 83,
+        width = cellY * 5;
         this.x = coordX,
         this.y = coordY,
         this.speed = startSpeed,
@@ -14,16 +14,26 @@ class Enemy {
         },
         this.update = function (dt) {
             this.x += this.speed * dt;
-            if (this.x > 500) {
-                this.x = Math.random() * -200;
-                this.speed = Math.random() * 150 + 200;
+            if (this.x > width + cellY) {
+                this.x = Math.random() * -300;
+                this.speed = Math.random() * 150 + Math.random() * 150;
             }
-        };
+            if (this.x > player.x - cellX + 20 &&
+                this.x < player.x + cellX - 15 &&
+                this.y < player.y &&
+                this.y + cellY > player.y) {
+                endGame(false);
+            }
+        }
     }
 }
 
 class Player {
     constructor(coordX, coordY) {
+        const cellX = 101,
+            cellY = 83,
+            height = cellX * 6,
+            width = cellY * 5;
         this.x = coordX,
         this.y = coordY,
         this.sprite = "images/char-boy.png",
@@ -33,32 +43,32 @@ class Player {
         },
         this.freezing = function() {
             this.freeze = true;
-        },
+        }
         this.unfreezing = function() {
             this.freeze = false;
-        }        
+        }
         this.update = function () {},
         this.handleInput = function (direction) {
             if (!this.freeze) {
                 switch (direction) {
                     case "ArrowLeft":
                         if (this.x > 0) {
-                            this.x -= 100;
+                            this.x -= cellX;
                         }
                         break;
                     case "ArrowRight":
-                        if (this.x < 400) {
-                            this.x += 100;
+                        if (this.x < width - cellX) {
+                            this.x += cellX;
                         }
                         break;
                     case "ArrowUp":
-                        if (this.y > -10) {
-                            this.y -= 83;
+                        if (this.y > 0) {
+                            this.y -= cellY;
                         }
                         break;
                     case "ArrowDown":
-                        if (this.y < 400) {
-                            this.y += 83;
+                        if (this.y < height - 3 * cellY) {
+                            this.y += cellY;
                         }
                         break;
                     default:
@@ -66,7 +76,7 @@ class Player {
                 }
                 if (this.y < 0) {
                     this.freeze = true;
-                    winGame();
+                    endGame(true);
                 }
             }
         }
@@ -77,17 +87,25 @@ const enemyCountPerTrack = 2;
 
 const allEnemies = generateEnemies(enemyCountPerTrack);
 
-function winGame() {
+function endGame (win) {
+    if (win) {
+        setTimeout(() => restartGame(true), 400);
+    } else {
+        setTimeout(() => restartGame(false), 0);
+    }
+}
+
+function restartGame (winLose) {
+    window.cancelAnimationFrame(requestID);
+    (winLose) ?
+        document.querySelector(".win").classList.add("show") :
+        document.querySelector(".lose").classList.add("show");
+    player.x = 200;
+    player.y = 405;
+    player.freezing();
     setTimeout(() => {
-        window.cancelAnimationFrame(requestID);
-        const startPositionsX = Math.floor(Math.random() * 5) * 100;
-        const startPositionsY = 317 + Math.floor(Math.random() * 2) * 83;
-        player = new Player(startPositionsX, startPositionsY);
-        player.freezing();
-        const winImage = new Image();
-        winImage.src = '/images/win-banner.png';
-        ctx.drawImage(winImage, 25, 100);
-    }, 500);
+        document.querySelector('.restart-btn').click();
+    }, 750);
 }
 
 function generateEnemies(n) {
@@ -97,7 +115,7 @@ function generateEnemies(n) {
         enemies = [
             ...enemies,
             ...enemyTracksY.map((trackY) => {
-                const startEnemySpeed = Math.random() * 150 + 100,
+                const startEnemySpeed = Math.random() * 150 + Math.random() * 150,
                     startEnemyX = Math.random() * -300;
                 return new Enemy(startEnemyX, trackY, startEnemySpeed);
             }),
@@ -107,6 +125,7 @@ function generateEnemies(n) {
 }
 
 let player = new Player(200, 405);
+
 
 document.addEventListener("keyup", function (e) {
     const allowedKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
