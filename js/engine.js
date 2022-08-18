@@ -14,19 +14,14 @@
  */
 'use strict';
 
-var Engine = (function (global) {
+export function Engine (global) {
   /* Predefine the variables we'll be using within this scope,
    * create the canvas element, grab the 2D context for that canvas
    * set the canvas element's height/width and add it to the DOM.
    */
-  var doc = global.document,
-    win = global.window,
-    canvas = doc.createElement("canvas"),
-    ctx = canvas.getContext("2d"),
-    lastTime,
-    startAnim = false;
-
-    prepareInterface();
+  var canvas = document.querySelector('canvas'),
+  ctx = canvas.getContext("2d"),
+  lastTime;
   /* This function serves as the kickoff point for the game loop itself
    * and handles properly calling the update and render methods.
    */
@@ -54,9 +49,7 @@ var Engine = (function (global) {
     /* Use the browser's requestAnimationFrame function to call this
      * function again as soon as the browser is able to draw another frame.
      */
-    if (startAnim) {
-      requestID = win.requestAnimationFrame(main);
-    }
+      window.requestAnimationFrame(main);
   }
 
   /* This function does some initial setup that should only occur once,
@@ -80,7 +73,6 @@ var Engine = (function (global) {
    */
   function update(dt) {
     updateEntities(dt);
-    // checkCollisions();
   }
 
   /* This is called by the update function and loops through all of the
@@ -186,49 +178,4 @@ var Engine = (function (global) {
    */
   global.ctx = ctx;
 
-  function prepareInterface () {
-
-    canvas.classList.add("game-field");
-    canvas.width = 505;
-    canvas.height = 606;
-    const mainDiv = doc.createElement("div"),
-      divContainer = doc.createElement("div");
-
-    mainDiv.classList.add("main");
-    divContainer.classList.add("container");
-    divContainer.setAttribute("id", "game-container");
-
-    const restartButton = doc.createElement("button");
-    restartButton.classList.add("restart-btn");
-    restartButton.innerText = "Start Game";
-
-    const winText = doc.createElement("img");
-    winText.classList.add("win");
-    winText.src = "../images/win-banner.png";
-    const loseText = doc.createElement("img");
-    loseText.classList.add("lose");
-    loseText.src = "../images/lose-banner.png";
-
-    divContainer.appendChild(winText);
-    divContainer.appendChild(loseText);
-
-    divContainer.appendChild(canvas);
-    divContainer.appendChild(restartButton);
-    mainDiv.appendChild(divContainer);
-
-    doc.body.appendChild(mainDiv);
-    restartButton.focus = true;
-
-    restartButton.addEventListener("click", (e) => {
-      if (e.target.innerText == "Start Game") {
-        e.target.classList.add("hide");
-      }
-      winText.classList.remove("show");
-      loseText.classList.remove("show");
-      startAnim = true;
-      player.unfreezing();
-      init();
-    });
-
-  }
-})(this);
+};

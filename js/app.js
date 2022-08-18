@@ -43,10 +43,10 @@ class Player {
         },
         this.freezing = function() {
             this.freeze = true;
-        }
+        },
         this.unfreezing = function() {
             this.freeze = false;
-        }
+        },
         this.update = function () {},
         this.handleInput = function (direction) {
             if (!this.freeze) {
@@ -79,11 +79,18 @@ class Player {
                     endGame(true);
                 }
             }
-        }
+        },
+        this.goToStart = function () {
+            this.x = Math.floor(Math.random() * 4) * cellX;
+            this.y = (Math.random() > 0.5) ? cellY * 5  - 10 : cellY * 4 - 10;
+        };
+
     }
 }
 
-const enemyCountPerTrack = 2;
+const player = new Player(200, 405);
+
+const enemyCountPerTrack = 1;
 
 const allEnemies = generateEnemies(enemyCountPerTrack);
 
@@ -96,16 +103,18 @@ function endGame (win) {
 }
 
 function restartGame (winLose) {
-    window.cancelAnimationFrame(requestID);
     (winLose) ?
         document.querySelector(".win").classList.add("show") :
         document.querySelector(".lose").classList.add("show");
-    player.x = 200;
-    player.y = 405;
+
+    player.goToStart();
+    /* player.x = 200;
+    player.y = 405; */
     player.freezing();
     setTimeout(() => {
         document.querySelector('.restart-btn').click();
-    }, 750);
+    }, 1000);
+
 }
 
 function generateEnemies(n) {
@@ -124,7 +133,7 @@ function generateEnemies(n) {
     return enemies;
 }
 
-let player = new Player(200, 405);
+
 
 
 document.addEventListener("keyup", function (e) {

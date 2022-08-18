@@ -11,10 +11,13 @@
   *:after {
     box-sizing: border-box;
   }
+
+  /*
 body {
+    width: 100%;
     text-align: center;
 }
-
+ */
 .main {
 
     display: flex;
@@ -25,8 +28,6 @@ body {
 }
 
 .container {
-
-    height: 50%;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
