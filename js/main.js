@@ -38,6 +38,11 @@ function prepareInterfaceAndRun (global) {
 
   doc.body.appendChild(mainDiv);
 
+  const testP = doc.createElement("p");
+  testP.classList.add("testP");
+  testP.innerHTML = "test";
+  doc.body.appendChild(testP);
+
   restartButton.addEventListener("click", (e) => {
     if (e.target.innerText == "Start Game") {
       e.target.classList.add("hide");
@@ -46,6 +51,59 @@ function prepareInterfaceAndRun (global) {
     loseText.classList.remove("show");
     player.unfreezing();
   });
+  
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);
+
+var xDown = null;                                                        
+var yDown = null;
+
+function getTouches(evt) {
+  return evt.touches;             // browser API
+}                                                     
+                                                                         
+function handleTouchStart(evt) {
+    const firstTouch = getTouches(evt)[0];                                      
+    xDown = firstTouch.clientX;      
+    console.log("xDown " + xDown);
+    yDown = firstTouch.clientY;   
+    console.log("yDown " + yDown);                                   
+};                                                
+                                                                         
+function handleTouchMove(evt) {
+    if ( ! xDown || ! yDown ) {
+        return;
+    }
+
+    var xUp = evt.touches[0].clientX;                                    
+    console.log("xUp " + xUp);
+    var yUp = evt.touches[0].clientY;
+    console.log("yUp " + xUp);
+
+    var xDiff = xDown - xUp;
+    var yDiff = yDown - yUp;
+                                                                         
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+        if ( xDiff > 0) {
+            /* right swipe */ 
+            testP.innerHTML = "Right swipe";
+        } else {
+            /* left swipe */
+            testP.innerHTML = "Left swipe";
+        }       
+    } else {
+        if ( yDiff > 0 ) {
+            /* down swipe */ 
+            testP.innerHTML = "Down swipe";
+        } else { 
+            /* up swipe */
+            testP.innerHTML = "Up swipe";
+        }                                                                 
+    }
+    /* reset values */
+    xDown = null;
+    yDown = null;                                             
+};
 
   Engine(global);
 };
