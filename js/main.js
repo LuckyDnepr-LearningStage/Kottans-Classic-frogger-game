@@ -85,19 +85,23 @@ function handleTouchMove(evt) {
                                                                          
     if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
         if ( xDiff > 0) {
-            /* right swipe */ 
-            testP.innerHTML = "Right swipe";
-        } else {
-            /* left swipe */
+            /* left swipe */ 
+            player.handleInput("ArrowLeft");
             testP.innerHTML = "Left swipe";
+        } else {
+            /* right swipe */
+            player.handleInput("ArrowRight");
+            testP.innerHTML = "Right swipe";
         }       
     } else {
         if ( yDiff > 0 ) {
-            /* down swipe */ 
-            testP.innerHTML = "Down swipe";
-        } else { 
-            /* up swipe */
+            /* up swipe */ 
+            player.handleInput("ArrowUp");
             testP.innerHTML = "Up swipe";
+        } else { 
+            /* down swipe */
+            player.handleInput("ArrowDown");
+            testP.innerHTML = "Down swipe";
         }                                                                 
     }
     /* reset values */
