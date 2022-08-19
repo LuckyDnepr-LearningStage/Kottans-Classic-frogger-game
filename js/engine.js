@@ -168,7 +168,13 @@ export function Engine (global) {
     "images/water-block.png",
     "images/grass-block.png",
     "images/enemy-bug.png",
-    "images/char-boy.png",
+    "images/hero-1.png",
+    "images/hero-2.png",
+    "images/hero-3.png",
+    "images/hero-4.png",
+    "images/hero-5.png",
+    "images/hero-6.png",
+    "images/hero-7.png"
   ]);
   Resources.onReady(init);
 
