@@ -24,10 +24,10 @@ function prepareInterfaceAndRun (global) {
 
   const winText = doc.createElement("img");
   winText.classList.add("win");
-  winText.src = "../images/win-banner.png";
+  winText.src = "images/win-banner.png";
   const loseText = doc.createElement("img");
   loseText.classList.add("lose");
-  loseText.src = "../images/lose-banner.png";
+  loseText.src = "images/lose-banner.png";
 
   divContainer.appendChild(winText);
   divContainer.appendChild(loseText);
