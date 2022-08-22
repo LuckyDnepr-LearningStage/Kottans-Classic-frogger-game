@@ -4,22 +4,23 @@
     margin: 0;
     padding: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  }
+}
 
-  *,
-  *:before,
-  *:after {
+*,
+*:before,
+*:after {
     box-sizing: border-box;
-  }
+}
 
- 
+
 body {
     height: 50vh;
     text-align: center;
 }
- 
+
 .main {
     display: flex;
+    margin-top: 10%;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: center;
@@ -41,7 +42,7 @@ body {
     margin: 5px;
     border: 2px solid black;
     border-radius: 10px;
-    background-color:forestgreen;
+    background-color: forestgreen;
     font-size: 16px;
     color: azure;
     transition: all 300ms linear;
@@ -49,7 +50,7 @@ body {
 }
 
 .player-change {
-    width: auto;
+    width: 500px;
     position: absolute;
     margin: auto;
     padding: 0.2em;
@@ -61,11 +62,12 @@ body {
 }
 
 .avatar {
-    width: 60%;
+    width: 40%;
+    height: auto;
 }
 
 .prev-next-buttons {
-    width: 20em;
+    width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -77,7 +79,7 @@ body {
 
 .btn {
     width: 40%;
-    height: 4em;
+    height: 3em;
     margin: auto;
     border: 2px solid green;
     border-radius: 5px;
@@ -124,12 +126,12 @@ body {
 
 .win {
     display: none;
-    position:absolute;
+    position: absolute;
 }
 
 .lose {
     display: none;
-    position:absolute;
+    position: absolute;
 }
 
 .show {
@@ -144,44 +146,86 @@ body {
     font-size: 36px;
 }
 
-@media (orientation: portrait) {
+.title {
+    margin-top: 20px;
+}
+
+.avatar-diff {
+    height: 20em;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#difficulty {
+    -webkit-appearance: slider-vertical;
+    width: 3em;
+    height: 80%;
+}
+
+@media only screen (orientation: portrait) {
     .player-change {
         width: 70vw;
     }
+
     .prev-next-buttons {
         width: 40em;
     }
+
     #btn-start {
         width: 85%;
         margin-top: 20px;
     }
+
     .btn {
         font-size: 36px;
     }
+
     .game-field {
         padding-top: 2em;
         width: 75vw;
     }
+
     .lose {
         width: 75vw;
     }
+
     .win {
         width: 75vw;
     }
 }
 
-@media (orientation: landscape) {
-    .main {
-        height: 90vh;
-    }
-    .game-field {
-        padding-top: 2em;
-        height: 75vh;
-    }
-    .lose {
-        height: 50vh;
-    }
-    .win {
-        height: 50vh;
+@media only screen {
+    @media (orientation: landscape) {
+        .main {
+            height: 80vh;
+            margin-top: 10px;
+        }
+
+        .game-field {
+            padding-top: 2em;
+            height: 75vh;
+        }
+
+        .lose {
+            height: 50vh;
+        }
+
+        .win {
+            height: 50vh;
+        }
+
+        .avatar-diff {
+            height: 12em;
+        }
+
+        .avatar {
+            width: 30%;
+        }
     }
 }

@@ -22,6 +22,7 @@ export function Engine (global) {
   var canvas = document.querySelector('canvas'),
   ctx = canvas.getContext("2d"),
   lastTime;
+  
   /* This function serves as the kickoff point for the game loop itself
    * and handles properly calling the update and render methods.
    */
@@ -168,13 +169,14 @@ export function Engine (global) {
     "images/water-block.png",
     "images/grass-block.png",
     "images/enemy-bug.png",
-    "images/hero-1.png",
-    "images/hero-2.png",
-    "images/hero-3.png",
-    "images/hero-4.png",
-    "images/hero-5.png",
-    "images/hero-6.png",
-    "images/hero-7.png"
+    "images/chibi-1.png",
+    "images/chibi-2.png",
+    "images/chibi-3.png",
+    "images/chibi-4.png",
+    "images/chibi-5.png",
+    "images/chibi-6.png",
+    "images/chibi-7.png",
+    "images/chibi-8.png",
   ]);
   Resources.onReady(init);
 

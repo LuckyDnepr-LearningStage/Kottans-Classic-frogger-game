@@ -1,6 +1,8 @@
 "use strict";
 
-import { Engine } from "./engine.js";
+import {
+  Engine
+} from "./engine.js";
 
 main();
 
@@ -9,7 +11,7 @@ function main() {
   addSwipesEventListener();
 }
 
-function prepareInterface(global) {
+function gamePlayDOM(global) {
   const doc = global.document,
     canvas = doc.createElement("canvas");
 
@@ -40,102 +42,44 @@ function prepareInterface(global) {
 
 }
 
-function addSwipesEventListener() {
-
-  document.addEventListener("touchstart", handleTouchStart, false);
-  document.addEventListener("touchmove", handleTouchMove, false);
-
-  var xDown = null;
-  var yDown = null;
-
-  function handleTouchStart(evt) {
-    const firstTouch = evt.touches[0];
-    xDown = firstTouch.clientX; //finger down
-    yDown = firstTouch.clientY; //finger down
-  }
-
-  function handleTouchMove(evt) {
-    if (!xDown || !yDown) {
-      return;
-    }
-
-    var xUp = evt.touches[0].clientX; //finger up
-    var yUp = evt.touches[0].clientY; //finger up
-
-    var xDiff = xDown - xUp;
-    var yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {
-      /*most significant*/
-      if (xDiff > 0) {
-        /* left swipe */
-        player.handleInput("ArrowLeft");
-      } else {
-        /* right swipe */
-        player.handleInput("ArrowRight");
-      }
-    } else {
-      if (yDiff > 0) {
-        /* up swipe */
-        player.handleInput("ArrowUp");
-      } else {
-        /* down swipe */
-        player.handleInput("ArrowDown");
-      }
-    }
-    /* reset values */
-    xDown = null;
-    yDown = null;
-  }
-}
 
 function welcomeInterface(global) {
   const doc = global.document;
-  const playerChange = doc.createElement("div"),
-    avatarPicture = doc.createElement("img"),
-    btns = doc.createElement("div"),
-    buttonNext = doc.createElement("button"),
-    buttonPrev = doc.createElement("button"),
-    buttonStart = doc.createElement("button"),
-    mainDiv = doc.createElement("div");
+  let difficulty = 2;
 
+  const mainDiv = doc.createElement("div");
   mainDiv.classList.add("main");
-  btns.classList.add("prev-next-buttons");
-  playerChange.classList.add("player-change");
-  avatarPicture.classList.add("avatar");
-  buttonNext.classList.add("btn");
-  buttonPrev.classList.add("btn");
-  buttonStart.classList.add("btn");
-  buttonNext.setAttribute("id", "btn-next");
-  buttonPrev.setAttribute("id", "btn-prev");
-  buttonStart.setAttribute("id", "btn-start");
-  buttonNext.innerText = "Next";
-  buttonPrev.innerText = "Previous";
-  buttonStart.innerText = "Start";
-
-  btns.appendChild(buttonPrev);
-  btns.appendChild(buttonNext);
-
-  playerChange.appendChild(avatarPicture);
-  playerChange.appendChild(btns);
-  playerChange.appendChild(buttonStart);
-
-  mainDiv.appendChild(playerChange);
+  mainDiv.innerHTML = `
+      <div class="player-change">
+        <h1 class="title">Classic Frogger Game</h1>
+        <div class="avatar-diff">
+              <input id="difficulty" type="range" min="1" max="4" step="1" value="2">
+              <img class="avatar" src="images/chibi-1.png" alt="game-avatar" navatar="0">
+        </div>
+            <div class="prev-next-buttons">
+              <button class="btn" id="btn-prev">Previous</button>
+              <button class="btn" id="btn-next">Next</button>
+            </div>
+            <button class="btn" id="btn-start">Play game STANDART</button>
+        </div>
+      </div>
+      `;
 
   const avatars = [
-    "images/hero-1.png",
-    "images/hero-2.png",
-    "images/hero-3.png",
-    "images/hero-4.png",
-    "images/hero-5.png",
-    "images/hero-6.png",
-    "images/hero-7.png",
+    "images/chibi-1.png",
+    "images/chibi-2.png",
+    "images/chibi-3.png",
+    "images/chibi-4.png",
+    "images/chibi-5.png",
+    "images/chibi-6.png",
+    "images/chibi-7.png",
+    "images/chibi-8.png",
   ];
 
-  avatarPicture.src = avatars[0];
-  avatarPicture.setAttribute("navatar", 0);
 
   doc.body.appendChild(mainDiv);
+
+  const btnStart = doc.querySelector("#btn-start");
 
   doc
     .querySelector("#btn-next")
@@ -146,8 +90,35 @@ function welcomeInterface(global) {
     .addEventListener("click", (e) => prevAvatar(e));
 
   doc
-    .querySelector("#btn-start")
-    .addEventListener("click", (e) => startGame(e));
+    .querySelector("#difficulty")
+    .addEventListener("input", (e) => {
+      console.log(e.target.value);
+      switch (e.target.value) {
+        case "1":
+          difficulty = 1;
+          btnStart.innerHTML = "Play game EASY";
+          break;
+        case "2":
+          difficulty = 2;
+          btnStart.innerHTML = "Play game NORMAL";
+          break;
+        case "3":
+          difficulty = 3;
+          btnStart.innerHTML = "Play game HARD";
+          break;
+        case "4":
+          difficulty = 4;
+          btnStart.innerHTML = "Play game HARDEST";
+          break;      
+        default:
+          break;
+      }
+    }) 
+
+  
+  
+  btnStart.addEventListener("click", (e) => startGame(e));
+
 
   function nextAvatar(e) {
     e.preventDefault();
@@ -167,7 +138,6 @@ function welcomeInterface(global) {
     e.preventDefault();
     const avatarPicture = doc.querySelector(".avatar"),
       n = avatarPicture.getAttribute("navatar");
-
     if (n == 0) {
       avatarPicture.src = avatars[avatars.length - 1];
       avatarPicture.setAttribute("navatar", avatars.length - 1);
@@ -177,15 +147,18 @@ function welcomeInterface(global) {
     }
   }
 
-  function startGame (e) {
+  function startGame(e) {
     e.preventDefault();
+    allEnemies.length = difficulty * 3;
     player.sprite = avatars[+doc.querySelector(".avatar").getAttribute("navatar")];
     doc.querySelector(".player-change").remove();
-    prepareInterface(window);
-    Engine (window);
+    gamePlayDOM(window);
+    Engine(window);
     doc.querySelector(".win").classList.remove("show");
     doc.querySelector(".lose").classList.remove("show");
     player.unfreezing();
-
+    
   }
+  
 }
+
