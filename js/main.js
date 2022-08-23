@@ -4,56 +4,34 @@ import {
   Engine
 } from "./engine.js";
 
-main();
+const doc = window.document,
+  avatars = [
+    "images/chibi-1.png",
+    "images/chibi-2.png",
+    "images/chibi-3.png",
+    "images/chibi-4.png",
+    "images/chibi-5.png",
+    "images/chibi-6.png",
+    "images/chibi-7.png",
+    "images/chibi-8.png",
+  ];
 
-function main() {
-  welcomeInterface(window);
-  addSwipesEventListener();
-}
+let difficulty = 2;
 
-function gamePlayDOM(global) {
-  const doc = global.document,
-    canvas = doc.createElement("canvas");
+(function main() {
 
-  canvas.classList.add("game-field");
-  canvas.width = 505;
-  canvas.height = 606;
-  const divContainer = doc.createElement("div");
+  renderWelcomeInterface();
+  addWelcomeButtonsLiteners();
+  addUserControlsListeners();
 
-  const mainDiv = doc.querySelector(".main");
-  divContainer.classList.add("container");
-  divContainer.setAttribute("id", "game-container");
-
-
-  const winText = doc.createElement("img");
-  winText.classList.add("win");
-  winText.src = "images/win-banner.png";
-  const loseText = doc.createElement("img");
-  loseText.classList.add("lose");
-  loseText.src = "images/lose-banner.png";
-
-  divContainer.appendChild(winText);
-  divContainer.appendChild(loseText);
-
-  divContainer.appendChild(canvas);
-  mainDiv.appendChild(divContainer);
-
-  doc.body.appendChild(mainDiv);
-
-}
-
-
-function welcomeInterface(global) {
-  const doc = global.document;
-  let difficulty = 2;
-
-  const mainDiv = doc.createElement("div");
-  mainDiv.classList.add("main");
-  mainDiv.innerHTML = `
+  function renderWelcomeInterface() {
+    const mainDiv = doc.createElement("div");
+    mainDiv.classList.add("main");
+    mainDiv.innerHTML = `
       <div class="player-change">
         <h1 class="title">Classic Frogger Game</h1>
         <div class="avatar-diff">
-              <input id="difficulty" type="range" min="1" max="4" step="1" value="2">
+              <input id="difficulty" type="range" min="1" max="4" step="1" value="${difficulty}">
               <img class="avatar" src="images/chibi-1.png" alt="game-avatar" navatar="0">
         </div>
             <div class="prev-next-buttons">
@@ -65,64 +43,106 @@ function welcomeInterface(global) {
       </div>
       `;
 
-  const avatars = [
-    "images/chibi-1.png",
-    "images/chibi-2.png",
-    "images/chibi-3.png",
-    "images/chibi-4.png",
-    "images/chibi-5.png",
-    "images/chibi-6.png",
-    "images/chibi-7.png",
-    "images/chibi-8.png",
-  ];
+    doc.body.appendChild(mainDiv);
+  }
 
+  function addWelcomeButtonsLiteners() {
+    const btnStart = doc.querySelector("#btn-start");
 
-  doc.body.appendChild(mainDiv);
+    doc
+      .querySelector("#btn-next")
+      .addEventListener("click", (e) => nextAvatar(e));
 
-  const btnStart = doc.querySelector("#btn-start");
+    doc
+      .querySelector("#btn-prev")
+      .addEventListener("click", (e) => prevAvatar(e));
 
-  doc
-    .querySelector("#btn-next")
-    .addEventListener("click", (e) => nextAvatar(e));
+    doc
+      .querySelector("#difficulty")
+      .addEventListener("input", (e) => {
+        switch (e.target.value) {
+          case "1":
+            difficulty = 1;
+            btnStart.innerHTML = "Play game EASY";
+            break;
+          case "2":
+            difficulty = 2;
+            btnStart.innerHTML = "Play game NORMAL";
+            break;
+          case "3":
+            difficulty = 3;
+            btnStart.innerHTML = "Play game HARD";
+            break;
+          case "4":
+            difficulty = 4;
+            btnStart.innerHTML = "Play game HARDEST";
+            break;
+          default:
+            break;
+        }
+      });
 
-  doc
-    .querySelector("#btn-prev")
-    .addEventListener("click", (e) => prevAvatar(e));
+    btnStart.addEventListener("click", (e) => startGame(e));
+  }
 
-  doc
-    .querySelector("#difficulty")
-    .addEventListener("input", (e) => {
-      console.log(e.target.value);
-      switch (e.target.value) {
-        case "1":
-          difficulty = 1;
-          btnStart.innerHTML = "Play game EASY";
-          break;
-        case "2":
-          difficulty = 2;
-          btnStart.innerHTML = "Play game NORMAL";
-          break;
-        case "3":
-          difficulty = 3;
-          btnStart.innerHTML = "Play game HARD";
-          break;
-        case "4":
-          difficulty = 4;
-          btnStart.innerHTML = "Play game HARDEST";
-          break;      
-        default:
-          break;
+  function addUserControlsListeners() {
+    doc.addEventListener("keyup", function (e) { //keyboard handler for move player
+      const allowedKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+      if (allowedKeys.includes(e.code)) {
+        player.handleInput(e.code);
       }
-    }) 
+    });
 
-  
-  
-  btnStart.addEventListener("click", (e) => startGame(e));
+    doc.addEventListener("touchstart", handleTouchStart, false); //swipes handler for move player
+    doc.addEventListener("touchmove", handleTouchMove, false); //swipes handler for move player
 
+    var xDown = null;
+    var yDown = null;
+
+    function handleTouchStart(evt) {
+      const firstTouch = evt.touches[0];
+      xDown = firstTouch.clientX; //finger down
+      yDown = firstTouch.clientY; //finger down
+    }
+
+    function handleTouchMove(evt) {
+      if (!xDown || !yDown) {
+        return;
+      }
+
+      var xUp = evt.touches[0].clientX; //finger up
+      var yUp = evt.touches[0].clientY; //finger up
+
+      var xDiff = xDown - xUp;
+      var yDiff = yDown - yUp;
+
+      if (Math.abs(xDiff) > Math.abs(yDiff)) {
+        /*most significant*/
+        if (xDiff > 0) {
+          /* left swipe */
+          player.handleInput("ArrowLeft");
+        } else {
+          /* right swipe */
+          player.handleInput("ArrowRight");
+        }
+      } else {
+        if (yDiff > 0) {
+          /* up swipe */
+          player.handleInput("ArrowUp");
+        } else {
+          /* down swipe */
+          player.handleInput("ArrowDown");
+        }
+      }
+      /* reset values */
+      xDown = null;
+      yDown = null;
+    }
+  }
 
   function nextAvatar(e) {
     e.preventDefault();
-    const avatarPicture = document.querySelector(".avatar"),
+    const avatarPicture = doc.querySelector(".avatar"),
       n = avatarPicture.getAttribute("nAvatar");
 
     if (n == avatars.length - 1) {
@@ -152,13 +172,23 @@ function welcomeInterface(global) {
     allEnemies.length = difficulty * 3;
     player.sprite = avatars[+doc.querySelector(".avatar").getAttribute("navatar")];
     doc.querySelector(".player-change").remove();
-    gamePlayDOM(window);
+    renderGamePlayDOM(window);
     Engine(window);
     doc.querySelector(".win").classList.remove("show");
     doc.querySelector(".lose").classList.remove("show");
     player.unfreezing();
-    
   }
-  
-}
 
+  function renderGamePlayDOM(global) {
+    const mainDiv = doc.createElement("div");
+    mainDiv.classList.add("main");
+    mainDiv.innerHTML = `
+          <div class="container" id="game-container">
+            <img class="win" src="images/win-banner.png" alt="You win!">
+            <img class="lose" src="images/lose-banner.png" alt="You lose!">
+            <canvas class="game-field" width="505" height="606">
+          </div>
+          `;
+    doc.querySelector(".main").replaceWith(mainDiv);
+  }
+}());
