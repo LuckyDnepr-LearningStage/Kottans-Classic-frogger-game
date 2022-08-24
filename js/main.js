@@ -67,7 +67,6 @@ function addWelcomeButtonsLiteners() {
         .addEventListener("click", (e) => startGame(e));
 }
 
-
 function addUserControlsListeners() {
     doc.addEventListener("keyup", function (e) { //keyboard handler for move player
         const allowedKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
@@ -188,9 +187,10 @@ function renderGamePlayDOM() {
     mainDiv.classList.add("main");
     mainDiv.innerHTML = `
           <div class="container" id="game-container">
+          <button id="goFS">GO to Full Screen Mode</button>
             <div class="points">
-              <p class="wins">Wins: <span id="win-points">${winPoints}</span></p>
-              <p class="fails">Fails: <span id="fail-points">${failPoints}</span></p>
+              <p class="points-show">Wins: <span id="win-points">${winPoints}</span></p>
+              <p class="points-show">Fails: <span id="fail-points">${failPoints}</span></p>
             </div>
             <img class="win" src="images/win-banner.png" alt="You win!">
             <img class="lose" src="images/lose-banner.png" alt="You lose!">
@@ -198,4 +198,27 @@ function renderGamePlayDOM() {
           </div>
           `;
     doc.querySelector(".main").replaceWith(mainDiv);
+    
+    doc.querySelector("#goFS").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!doc.fullscreenElement) {
+            e.target.innerText = "EXIT from Full Screen Mode";
+            e.target.style.marginTop = "0.5em";
+            doc.querySelector(".main").requestFullscreen();
+            e.target.style.fontSize = "12px";
+            doc.querySelector(".points").style.fontSize = "18px";
+            doc.querySelector("#win-points").style.fontSize = "18px";
+            doc.querySelector("#fail-points").style.fontSize = "18px";
+
+        } else {
+            e.target.innerText = "GO to Full Screen Mode";
+            doc.exitFullscreen();
+            e.target.style.fontSize = "";
+            e.target.style.marginTop = "";
+            doc.querySelector(".points").style.fontSize = "";
+            doc.querySelector("#win-points").style.fontSize = "";
+            doc.querySelector("#fail-points").style.fontSize = "";
+        }
+        
+    });
 }
