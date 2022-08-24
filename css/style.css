@@ -209,7 +209,7 @@ body {
     transform: rotate(-180deg);
 }
 
-#goFS {
+#goFullScreen {
     border: 1px solid green;
     border-radius: 5px;
     background: linear-gradient(
@@ -261,16 +261,16 @@ body {
         .points {
             font-size: 40px;
         }
-        
+
         #win-points {
             font-size: 60px;
         }
-        
+
         #fail-points {
             font-size: 60px;
             text-shadow: 3px 3px 5px rgba(255, 0, 43, 0.904);
         }
-        #goFS {
+        #goFullScreen {
             height: 3em;
             font-size: 28px;
         }
@@ -302,7 +302,7 @@ body {
             width: 30%;
         }
 
-        #goFS {
+        #goFullScreen {
             display: block;
         }
     }

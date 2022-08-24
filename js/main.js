@@ -5,7 +5,8 @@ import {
 } from "./engine.js";
 
 const doc = window.document,
-    avatars = [
+    enemyAvatar = "images/enemy-bug.png",
+    playerAvatars = [
         "images/chibi-1.png",
         "images/chibi-2.png",
         "images/chibi-3.png",
@@ -20,7 +21,7 @@ let difficulty = 2;
 
 (function main() {
     renderWelcomeInterface();
-    addWelcomeButtonsLiteners();
+    addWelcomeEventsLiteners();
     addUserControlsListeners();
 })();
 
@@ -49,7 +50,7 @@ function renderWelcomeInterface() {
     doc.body.appendChild(mainDiv);
 }
 
-function addWelcomeButtonsLiteners() {
+function addWelcomeEventsLiteners() {
     doc
         .querySelector("#btn-next")
         .addEventListener("click", (e) => nextAvatar(e));
@@ -126,11 +127,11 @@ function nextAvatar(e) {
     e.preventDefault();
     const avatarPicture = doc.querySelector(".avatar"),
         n = avatarPicture.dataset.avatar;
-    if (n == avatars.length - 1) {
-        avatarPicture.src = avatars[0];
+    if (n == playerAvatars.length - 1) {
+        avatarPicture.src = playerAvatars[0];
         avatarPicture.dataset.avatar = 0;
     } else {
-        avatarPicture.src = avatars[+n + 1];
+        avatarPicture.src = playerAvatars[+n + 1];
         avatarPicture.dataset.avatar = +n + 1;
     }
 }
@@ -140,32 +141,31 @@ function prevAvatar(e) {
     const avatarPicture = doc.querySelector(".avatar"),
         n = avatarPicture.dataset.avatar;
     if (n == 0) {
-        avatarPicture.src = avatars[avatars.length - 1];
-        avatarPicture.dataset.avatar = avatars.length - 1;
+        avatarPicture.src = playerAvatars[playerAvatars.length - 1];
+        avatarPicture.dataset.avatar = playerAvatars.length - 1;
     } else {
-        avatarPicture.src = avatars[+n - 1];
+        avatarPicture.src = playerAvatars[+n - 1];
         avatarPicture.dataset.avatar = +n - 1;
     }
 }
 
 function changeDifficulty (e) {
-    const btnStart = doc.querySelector("#btn-start");
     switch (e.target.value) {
         case "1":
             difficulty = 1;
-            btnStart.innerHTML = "Play game EASY";
+            doc.querySelector("#btn-start").innerHTML = "Play game EASY";
             break;
         case "2":
             difficulty = 2;
-            btnStart.innerHTML = "Play game NORMAL";
+            doc.querySelector("#btn-start").innerHTML = "Play game NORMAL";
             break;
         case "3":
             difficulty = 3;
-            btnStart.innerHTML = "Play game HARD";
+            doc.querySelector("#btn-start").innerHTML = "Play game HARD";
             break;
         case "4":
             difficulty = 4;
-            btnStart.innerHTML = "Play game HARDEST";
+            doc.querySelector("#btn-start").innerHTML = "Play game HARDEST";
             break;
         default:
             break;
@@ -174,8 +174,9 @@ function changeDifficulty (e) {
 
 function startGame(e) {
     e.preventDefault();
-    allEnemies.length = difficulty * 3;
-    player.sprite = avatars[+doc.querySelector(".avatar").dataset.avatar];
+    allEnemies.length = difficulty * 3; //change
+    player.setAvatar(playerAvatars[+doc.querySelector(".avatar").dataset.avatar]);
+    allEnemies.forEach(enemy => enemy.setAvatar(enemyAvatar));
     doc.querySelector(".player-change").remove();
     renderGamePlayDOM(window);
     Engine(window);
@@ -187,7 +188,7 @@ function renderGamePlayDOM() {
     mainDiv.classList.add("main");
     mainDiv.innerHTML = `
           <div class="container" id="game-container">
-          <button id="goFS">GO to Full Screen Mode</button>
+          <button id="goFullScreen">GO to Full Screen Mode</button>
             <div class="points">
               <p class="points-show">Wins: <span id="win-points">${winPoints}</span></p>
               <p class="points-show">Fails: <span id="fail-points">${failPoints}</span></p>
@@ -198,8 +199,8 @@ function renderGamePlayDOM() {
           </div>
           `;
     doc.querySelector(".main").replaceWith(mainDiv);
-    
-    doc.querySelector("#goFS").addEventListener("click", (e) => {
+
+    doc.querySelector("#goFullScreen").addEventListener("click", (e) => {
         e.preventDefault();
         if (!doc.fullscreenElement) {
             e.target.innerText = "EXIT from Full Screen Mode";
@@ -219,6 +220,6 @@ function renderGamePlayDOM() {
             doc.querySelector("#win-points").style.fontSize = "";
             doc.querySelector("#fail-points").style.fontSize = "";
         }
-        
+
     });
 }
