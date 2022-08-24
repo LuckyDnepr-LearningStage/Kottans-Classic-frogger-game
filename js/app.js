@@ -5,6 +5,9 @@ const cellX = 101, //gamefield sizes
     height = cellX * 6,
     width = cellY * 5;
 
+let winPoints = 0,
+failPoints = 0;
+
 class Enemy {
     constructor(coordX, coordY, startSpeed) {
         this.x = coordX,
@@ -17,8 +20,8 @@ class Enemy {
     }
     update(dt) {
         this.x += this.speed * dt;
-        if (this.x > width + cellY) { //change enemy start point before new appearance
-            this.x = Math.random() * -300;
+        if (this.x > width + cellY) { 
+            this.x = Math.random() * -300; //change enemy start point before new appearance
             this.speed = Math.random() * 150 + Math.random() * 150; //change enemy speed before new appearance
         }
         if (this.x > player.x - cellX + 20 && //+20 - correction for avatar, for clearer collision
@@ -85,22 +88,24 @@ class Player {
     }
 }
 
-function endGame(win) {
+function endGame(win) { //end gameset
     if (win) {
+        winPoints += 1;
         setTimeout(() => restartGame(true), 400);
+        updatePoints();
     } else {
+        failPoints += 1;
         setTimeout(() => restartGame(false), 0);
+        updatePoints();
     }
 }
 
-function restartGame(winLose) {
-    (winLose) ?
-    document.querySelector(".win").classList.add("show"): document.querySelector(".lose").classList.add("show");
+function restartGame(winLose) { //restart gameset - winLose - true->win; false->fail
+    winLoseBanners (winLose);
     player.freezing();
     player.goToStart();
     setTimeout(() => {
-        document.querySelector(".win").classList.remove("show");
-        document.querySelector(".lose").classList.remove("show");
+        winLoseBanners ();
         player.unfreezing();
     }, 750);
 }
@@ -119,6 +124,23 @@ function generateEnemies(n) { //n - enemies per track
         ];
     }
     return enemies;
+}
+
+function updatePoints () {
+    document.querySelector("#win-points").innerHTML = winPoints;
+    document.querySelector("#fail-points").innerHTML = failPoints;
+}
+
+function winLoseBanners (winLose = -1) { //show/hide win/lose banners
+    if (winLose == -1) {
+        document.querySelector(".win").classList.remove("show");
+        document.querySelector(".lose").classList.remove("show");
+    } else {
+        (winLose)
+            ? document.querySelector(".win").classList.add("show")
+            : document.querySelector(".lose").classList.add("show");
+    }
+    
 }
 
 var allEnemies = generateEnemies(4), //"4" - the hardest level (12 enemies)
