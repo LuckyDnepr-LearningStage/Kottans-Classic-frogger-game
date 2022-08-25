@@ -57,7 +57,7 @@ class Enemy extends Unit {
 class Player extends Unit {
     constructor (coordX, coordY, avatar) {
         super(coordX, coordY, avatar);
-        this._freeze = true;
+        this._freeze = true; //the player does not respond to the keyboard if _freeze === true
     }
     freezing() {
         this._freeze = true; //player freezed until the win/lose banner showing
@@ -71,7 +71,7 @@ class Player extends Unit {
     }
     handleInput(key) {
         if (!this._freeze) {
-            switch (key) { //move player
+            switch (key) { //choose direction depending on the key pressed
                 case "ArrowLeft":
                     this.stepLeft();
                     break;
@@ -87,31 +87,31 @@ class Player extends Unit {
                 default:
                     break;
             }
-            this.checkWin();
+            this.checkWin(); //check win after move player
         }
     }
-    stepLeft () {
+    stepLeft () { //player do step left
         if (this.x > 0) {
             this.x -= blockWidth;
         }
     }
-    stepRight () {
+    stepRight () { //player do step right
         if (this.x < fieldWidth - 1.5 * blockWidth) {
             this.x += blockWidth;
         }
     }
-    stepUp () {
+    stepUp () { //player do step up
         if (this.y > 0) {
             this.y -= blockHeight;
         }
     }
-    stepDown () {
+    stepDown () { //player do step down
         if (this.y < fieldHeight - 1.5 * blockHeight) {
             this.y += blockHeight;
         }
     }
-    checkWin () {
-        if (this.y < 0) { //player on the water => you win
+    checkWin () { //player on the water => you win
+        if (this.y < 0) { 
             this._freeze = true;
             endGame(true); //win the game
         }
@@ -140,20 +140,20 @@ function restartGame(winLose) { //restart gameset - winLose - true->win; false->
     }, 750);
 }
 
-function generateEnemies(n) { //n - enemies per track
+function generateEnemies(n) { //n - enemies per track - this is equivalent difficulty
     let enemies = [];
     for (let i = 1; i <= n; i++) {
         enemies
             .push(...enemyTracksHeight
                 .map((trackHeight) => {
-                    return new Enemy(Math.random() * -300, trackHeight, Math.random() * 350);
+                    return new Enemy(Math.random() * -300, trackHeight, Math.random() * 350); //randomise start point and speed
                 })
             );
     }
     return enemies;
 }
 
-function updatePoints () {
+function updatePoints () { //update win/lode points
     document.querySelector("#win-points").innerHTML = winPoints;
     document.querySelector("#fail-points").innerHTML = failPoints;
 }
