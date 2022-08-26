@@ -182,7 +182,7 @@ function startGame(e) {
   doc.querySelector(".player-change").remove(); //remove welcome interface
   renderGamePlayDOM(window); //render game field and etc.
   Engine(window); //run game engine
-  player.unfreezing(); //unfreezing player
+  player.unfreeze(); //unfreezing player
 }
 
 function renderGamePlayDOM() {
